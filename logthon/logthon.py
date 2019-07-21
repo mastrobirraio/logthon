@@ -25,6 +25,14 @@ WARN_LEVEL = 'WARNING'
 ERRO_LEVEL = 'ERROR'
 SUCC_LEVEL = 'SUCCESS'
 
+"""LOG LEVELS"""
+LOG_LEVELS = {
+    INFO_LEVEL: GREY_FORMAT,
+    WARN_LEVEL: YELLOW_FORMAT,
+    ERRO_LEVEL: RED_FORMAT,
+    SUCC_LEVEL: GREEN_FORMAT
+}
+
 
 class Logthon:
 
@@ -59,7 +67,7 @@ class Logthon:
         :param message: the message to log
         """
         message = self.compose_message(INFO_LEVEL, message)
-        print(self.compose_output(GREY_FORMAT, message))
+        print(self.compose_output(LOG_LEVELS[INFO_LEVEL], message))
 
     def warn(self, message):
         """Print a log using WARN_LEVEL
@@ -67,7 +75,7 @@ class Logthon:
         :param message: the message to log
         """
         message = self.compose_message(WARN_LEVEL, message)
-        print(self.compose_output(YELLOW_FORMAT, message))
+        print(self.compose_output(LOG_LEVELS[WARN_LEVEL], message))
 
     def error(self, message):
         """Print a log using ERRO_LEVEL
@@ -75,7 +83,7 @@ class Logthon:
         :param message: the message to log
         """
         message = self.compose_message(ERRO_LEVEL, message)
-        print(self.compose_output(RED_FORMAT, message))
+        print(self.compose_output(LOG_LEVELS[ERRO_LEVEL], message))
     
     def success(self, message):
         """Print a log using SUCC_LEVEL
@@ -83,4 +91,4 @@ class Logthon:
         :param message: the message to log
         """
         message = self.compose_message(SUCC_LEVEL, message)
-        print(self.compose_output(GREEN_FORMAT, message))
+        print(self.compose_output(LOG_LEVELS[SUCC_LEVEL], message))
