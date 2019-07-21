@@ -13,9 +13,9 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     url='https://github.com/mastrobirraio/logthon',
-    packages=find_packages,
+    packages=find_packages(),
     classifiers=[
-        'Programming Language :: Python :: 3.7',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        "Programming Language :: Python :: 3.7.3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ]
 )
