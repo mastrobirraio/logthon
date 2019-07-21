@@ -103,6 +103,7 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# IDEs
+# My stuffs
 .idea/
 .vscode/
+.pypirc
