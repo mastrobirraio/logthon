@@ -19,6 +19,8 @@ STD_FORMAT = '[{timestamp}] - {level}: {message}'
 YELLOW_FORMAT = Fore.YELLOW
 RED_FORMAT = Fore.RED
 GREEN_FORMAT = Fore.GREEN
+MAGENTA_FORMAT = Fore.MAGENTA
+LT_YELLOW_FORMAT = Fore.LIGHTYELLOW_EX
 RESET_FORMAT = Fore.RESET
 
 """LEVELS"""
@@ -26,13 +28,17 @@ INFO_LEVEL = 'INFO'
 WARN_LEVEL = 'WARNING'
 ERRO_LEVEL = 'ERROR'
 SUCC_LEVEL = 'SUCCESS'
+CRITCAL_LEVEL = 'CRITICAL'
+DEBUG_LEVEL = 'DEBUG'
 
 """LOG LEVELS"""
 LOG_LEVELS = {
     INFO_LEVEL: RESET_FORMAT,
     WARN_LEVEL: YELLOW_FORMAT,
     ERRO_LEVEL: RED_FORMAT,
-    SUCC_LEVEL: GREEN_FORMAT
+    SUCC_LEVEL: GREEN_FORMAT,
+    CRITCAL_LEVEL: MAGENTA_FORMAT,
+    DEBUG_LEVEL: LT_YELLOW_FORMAT
 }
 
 
@@ -94,3 +100,19 @@ class Logthon:
         """
         message = self.compose_message(SUCC_LEVEL, message)
         print(self.compose_output(LOG_LEVELS[SUCC_LEVEL], message))
+
+    def critical(self, message):
+        """Print a log using CRITICAL_LEVEL
+
+        :param message: the message to log
+        """
+        message = self.compose_message(CRITCAL_LEVEL, message)
+        print(self.compose_output(LOG_LEVELS[CRITCAL_LEVEL], message))
+
+    def debug(self, message):
+        """Print a log using DEBUG_LEVEL
+
+        :param message: the message to log
+        """
+        message = self.compose_message(DEBUG_LEVEL, message)
+        print(self.compose_output(LOG_LEVELS[DEBUG_LEVEL], message))
