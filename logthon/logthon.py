@@ -10,14 +10,16 @@ Loghton is a simple logger for Python
 
 from datetime import datetime
 
+from colorama import Fore
+
 """OUTPUT FORMAT"""
 STD_FORMAT = '[{timestamp}] - {level}: {message}'
 
 """COLORS"""
-YELLOW_FORMAT = '1;33;40m'
-GREY_FORMAT = '1;30;40m'
-RED_FORMAT = '1;31;40m'
-GREEN_FORMAT = '1;32;40m'
+YELLOW_FORMAT = Fore.YELLOW
+RED_FORMAT = Fore.RED
+GREEN_FORMAT = Fore.GREEN
+RESET_FORMAT = Fore.RESET
 
 """LEVELS"""
 INFO_LEVEL = 'INFO'
@@ -27,7 +29,7 @@ SUCC_LEVEL = 'SUCCESS'
 
 """LOG LEVELS"""
 LOG_LEVELS = {
-    INFO_LEVEL: GREY_FORMAT,
+    INFO_LEVEL: RESET_FORMAT,
     WARN_LEVEL: YELLOW_FORMAT,
     ERRO_LEVEL: RED_FORMAT,
     SUCC_LEVEL: GREEN_FORMAT
@@ -59,7 +61,7 @@ class Logthon:
         :param message: the message to log
         :return:
         """
-        return '\033[{}{}\033[00m'.format(color, message)
+        return '{}{}{}'.format(color, message, RESET_FORMAT)
 
     def info(self, message):
         """Print a log using INFO_LEVEL
