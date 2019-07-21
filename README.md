@@ -48,7 +48,19 @@ Logthon.error('This is an error log')
 ### Success level
 
 ```
-Logthon.info('This is a success log')
+Logthon.success('This is a success log')
+```
+
+### Critical level
+
+```
+Logthon.critical('This is a critical log')
+```
+
+### Debug level
+
+```
+Logthon.debug('This is a debug log')
 ```
 
 ## Contributing

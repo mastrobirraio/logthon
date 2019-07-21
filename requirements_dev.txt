@@ -3,6 +3,7 @@ attrs==19.1.0
 bleach==3.1.0
 certifi==2019.6.16
 chardet==3.0.4
+colorama==0.4.1
 docutils==0.15
 freezegun==0.3.12
 idna==2.8

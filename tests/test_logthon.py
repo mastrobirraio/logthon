@@ -21,7 +21,11 @@ def compose_text_message(level, message):
 
 def compose_log(level, message):
     text_message = compose_text_message(level, message)
-    return '\033[{}{}\033[00m'.format(ln.LOG_LEVELS[level], text_message)
+    return '{color}{message}{reset_format}'.format(
+        color=ln.LOG_LEVELS[level],
+        message=text_message,
+        reset_format=ln.RESET_FORMAT
+    )
 
 
 @freeze_time('2012-01-14')
@@ -54,3 +58,19 @@ def test_success_level(capsys):
     Logthon.success(message)
     captured = capsys.readouterr()
     assert compose_log(ln.SUCC_LEVEL, message) in captured.out
+
+
+@freeze_time('2012-01-14')
+def test_critical_level(capsys):
+    message = 'This is a critical test log'
+    Logthon.critical(message)
+    captured = capsys.readouterr()
+    assert compose_log(ln.CRITCAL_LEVEL, message) in captured.out
+
+
+@freeze_time('2012-01-14')
+def test_debug_level(capsys):
+    message = 'This is a debug test log'
+    Logthon.debug(message)
+    captured = capsys.readouterr()
+    assert compose_log(ln.DEBUG_LEVEL, message) in captured.out
