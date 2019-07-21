@@ -67,7 +67,11 @@ class Logthon:
         :param message: the message to log
         :return:
         """
-        return '{}{}{}'.format(color, message, RESET_FORMAT)
+        return '{color}{message}{reset_format}'.format(
+            color=color,
+            message=message,
+            reset_format=RESET_FORMAT
+        )
 
     def info(self, message):
         """Print a log using INFO_LEVEL
