@@ -1,3 +1,6 @@
+# test_logthon.py
+# -*- coding: utf-8 -*-
+
 """Tests for `logthon` package"""
 from datetime import datetime
 
