@@ -4,5 +4,5 @@ python: 3.7.2
 install:
   - pip install -r requirements_dev.txt
   - pip install -e .
-script:
-  - pytest --cov=logthon
+script: coverage run --source cookiecutter setup.py test
+after_success: coveralls
