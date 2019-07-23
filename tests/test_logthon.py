@@ -2,75 +2,155 @@
 # -*- coding: utf-8 -*-
 
 """Tests for `logthon` package"""
-from datetime import datetime
+
+import io
+import os
+import unittest.mock
 
 from freezegun import freeze_time
 
-from logthon import logthon as ln
+from logthon.logthon import Logthon
 
-Logthon = ln.Logthon()
-
-
-def compose_text_message(level, message):
-    return ln.STD_FORMAT.format(
-        timestamp=datetime.now(),
-        level=level,
-        message=message
-    )
+FREEZE_DATE = '2012-01-14'
 
 
-def compose_log(level, message):
-    text_message = compose_text_message(level, message)
-    return '{color}{message}{reset_format}'.format(
-        color=ln.LOG_LEVELS[level],
-        message=text_message,
-        reset_format=ln.RESET_FORMAT
-    )
+class TestLogthon(unittest.TestCase):
+
+    def setUp(self):
+        self.logthon = Logthon()
+
+    @freeze_time(FREEZE_DATE)
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_info_level(self, mock_stdout):
+        message = 'This is an info test log'
+        self.logthon.info(message)
+        self.assertIn(message, mock_stdout.getvalue())
+
+    @freeze_time(FREEZE_DATE)
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_warn_level(self, mock_stdout):
+        message = 'This is a warn test log'
+        self.logthon.warn(message)
+        self.assertIn(message, mock_stdout.getvalue())
+
+    @freeze_time(FREEZE_DATE)
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_error_level(self, mock_stdout):
+        message = 'This is an error test log'
+        self.logthon.error(message)
+        self.assertIn(message, mock_stdout.getvalue())
+
+    @freeze_time(FREEZE_DATE)
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_critical_level(self, mock_stdout):
+        message = 'This is a critical test log'
+        self.logthon.critical(message)
+        self.assertIn(message, mock_stdout.getvalue())
+
+    @freeze_time(FREEZE_DATE)
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_debug_level(self, mock_stdout):
+        message = 'This is a debug test log'
+        self.logthon.debug(message)
+        self.assertIn(message, mock_stdout.getvalue())
+
+    @freeze_time(FREEZE_DATE)
+    @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_success_level(self, mock_stdout):
+        message = 'This is a success test log'
+        self.logthon.warn(message)
+        self.assertIn(message, mock_stdout.getvalue())
 
 
-@freeze_time('2012-01-14')
-def test_info_level(capsys):
-    message = 'This is an info test log'
-    Logthon.info(message)
-    captured = capsys.readouterr()
-    assert compose_log(ln.INFO_LEVEL, message) in captured.out
+class TestLogthonDefaultFile(unittest.TestCase):
+
+    def setUp(self):
+        self.temp_file = '../logthon/logthon.log'
+        self.logthon = Logthon(save_log=True)
+
+    def _clean(self):
+        os.remove(self.temp_file)
+
+    @freeze_time(FREEZE_DATE)
+    def test_info_level(self):
+        message = 'This is an info test log'
+        self.logthon.info(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_warn_level(self):
+        message = 'This is a warn test log'
+        self.logthon.warn(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_error_level(self):
+        message = 'This is an error test log'
+        self.logthon.error(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_critical_level(self):
+        message = 'This is a critical test log'
+        self.logthon.critical(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_debug_level(self):
+        message = 'This is a debug test log'
+        self.logthon.debug(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_success_level(self):
+        message = 'This is a success test log'
+        self.logthon.success(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
 
 
-@freeze_time('2012-01-14')
-def test_warn_level(capsys):
-    message = 'This is a warn test log'
-    Logthon.warn(message)
-    captured = capsys.readouterr()
-    assert compose_log(ln.WARN_LEVEL, message) in captured.out
+class TestLogthonCustomFile(TestLogthonDefaultFile):
+
+    def setUp(self):
+        self.file_name = 'app.log'
+        self.temp_file = '../logthon/{}'.format(self.file_name)
+        self.logthon = Logthon(save_log=True, filename=self.file_name)
+
+    @freeze_time(FREEZE_DATE)
+    def test_info_level(self):
+        super(TestLogthonCustomFile, self).test_info_level()
+    
+    @freeze_time(FREEZE_DATE)
+    def test_warn_level(self):
+        super(TestLogthonCustomFile, self).test_warn_level()
+        
+    @freeze_time(FREEZE_DATE)
+    def test_error_level(self):
+        super(TestLogthonCustomFile, self).test_error_level()
+
+    @freeze_time(FREEZE_DATE)
+    def test_critical_level(self):
+        super(TestLogthonCustomFile, self).test_critical_level()
+    
+    @freeze_time(FREEZE_DATE)
+    def test_debug_level(self):
+        super(TestLogthonCustomFile, self).test_debug_level()
+    
+    @freeze_time(FREEZE_DATE)
+    def test_success_level(self):
+        super(TestLogthonCustomFile, self).test_success_level()
 
 
-@freeze_time('2012-01-14')
-def test_error_level(capsys):
-    message = 'This is an error test log'
-    Logthon.error(message)
-    captured = capsys.readouterr()
-    assert compose_log(ln.ERRO_LEVEL, message) in captured.out
-
-
-@freeze_time('2012-01-14')
-def test_success_level(capsys):
-    message = 'This is a success test log'
-    Logthon.success(message)
-    captured = capsys.readouterr()
-    assert compose_log(ln.SUCC_LEVEL, message) in captured.out
-
-
-@freeze_time('2012-01-14')
-def test_critical_level(capsys):
-    message = 'This is a critical test log'
-    Logthon.critical(message)
-    captured = capsys.readouterr()
-    assert compose_log(ln.CRITCAL_LEVEL, message) in captured.out
-
-
-@freeze_time('2012-01-14')
-def test_debug_level(capsys):
-    message = 'This is a debug test log'
-    Logthon.debug(message)
-    captured = capsys.readouterr()
-    assert compose_log(ln.DEBUG_LEVEL, message) in captured.out
+if __name__ == '__main__':
+    unittest.main()

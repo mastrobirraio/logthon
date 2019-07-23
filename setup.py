@@ -23,17 +23,14 @@ requirements = [
 
 test_requirements = {
     'dev': [
-        'pytest',
-        'pytest-cov',
         'coveralls',
         'freezegun',
-        'colorama',
-    ]
+           ] + requirements
 }
 
 setup(
     name=NAME,
-    version='1.6.2',
+    version='2.0.0',
     author='Giuseppe "mastrobirraio" Matranga',
     author_email='matrangagiuseppe99@gmail.com',
     maintainer='Giuseppe "mastrobirraio Matranga',
