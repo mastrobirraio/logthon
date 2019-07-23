@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Logthhon
+Logthon
 ~~~~~~~~
 
 Loghton is a simple logger for Python
@@ -28,7 +28,7 @@ INFO_LEVEL = 'INFO'
 WARN_LEVEL = 'WARNING'
 ERRO_LEVEL = 'ERROR'
 SUCC_LEVEL = 'SUCCESS'
-CRITCAL_LEVEL = 'CRITICAL'
+CRITICAL_LEVEL = 'CRITICAL'
 DEBUG_LEVEL = 'DEBUG'
 
 """LOG LEVELS"""
@@ -37,16 +37,23 @@ LOG_LEVELS = {
     WARN_LEVEL: YELLOW_FORMAT,
     ERRO_LEVEL: RED_FORMAT,
     SUCC_LEVEL: GREEN_FORMAT,
-    CRITCAL_LEVEL: MAGENTA_FORMAT,
+    CRITICAL_LEVEL: MAGENTA_FORMAT,
     DEBUG_LEVEL: LT_YELLOW_FORMAT
 }
 
 
 class Logthon:
 
-    def __init__(self):
+    def __init__(self, save_log=False, filename='logthon.log'):
         """Set the format global variable as class attribute"""
-        self.format = STD_FORMAT
+        self._format = STD_FORMAT
+        self._filename = filename
+        self._save_log = save_log
+
+    def _log_to_file(self, message):
+        if self._save_log:
+            with open(self._filename, 'a') as log_file:
+                log_file.write('{}\n'.format(message))
 
     def compose_message(self, level, message):
         """Compose the text message
@@ -55,10 +62,13 @@ class Logthon:
         :param message: the message to log
         :return: the formatted string
         """
-        return self.format.format(
+        log_message = self._format.format(
             timestamp=datetime.now(),
             level=level,
-            message=message)
+            message=message
+        )
+        self._log_to_file(log_message)
+        return log_message
 
     def compose_output(self, color, message):
         """Compose the output message
@@ -110,8 +120,8 @@ class Logthon:
 
         :param message: the message to log
         """
-        message = self.compose_message(CRITCAL_LEVEL, message)
-        print(self.compose_output(LOG_LEVELS[CRITCAL_LEVEL], message))
+        message = self.compose_message(CRITICAL_LEVEL, message)
+        print(self.compose_output(LOG_LEVELS[CRITICAL_LEVEL], message))
 
     def debug(self, message):
         """Print a log using DEBUG_LEVEL
