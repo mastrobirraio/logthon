@@ -19,12 +19,31 @@ pip3 install logthon
 
 ## Usage
 
+
 ### Import
+
+#### Classic import
 
 ```
 from logthon.logthon import Logthon as Logger
 
 Logthon = Logger()
+```
+
+#### Save output on file
+
+```
+from logthon.logthon import Logthon as Logger
+
+Logthon = Logger(save_log=True)
+```
+
+#### Save output on custom file
+
+```
+from logthon.logthon import Logthon as Logger
+
+Logthon = Logger(save_log=True, filename='/path/to/file')
 ```
 
 ### Info level
