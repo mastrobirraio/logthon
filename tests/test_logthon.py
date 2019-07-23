@@ -120,5 +120,64 @@ class TestLogthonDefaultFile(unittest.TestCase):
         self._clean()
 
 
+class TestLogthonCustomFile(unittest.TestCase):
+
+    def setUp(self):
+        self.file_name = 'app.log'
+        self.temp_file = '../logthon/{}'.format(self.file_name)
+        self.logthon = Logthon(save_log=True, filename=self.file_name)
+
+    def _clean(self):
+        os.remove(self.temp_file)
+
+    @freeze_time(FREEZE_DATE)
+    def test_info_level(self):
+        message = 'This is an info test log'
+        self.logthon.info(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_warn_level(self):
+        message = 'This is a warn test log'
+        self.logthon.warn(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_error_level(self):
+        message = 'This is an error test log'
+        self.logthon.error(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_critical_level(self):
+        message = 'This is a critical test log'
+        self.logthon.critical(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_debug_level(self):
+        message = 'This is a debug test log'
+        self.logthon.debug(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+    @freeze_time(FREEZE_DATE)
+    def test_success_level(self):
+        message = 'This is a success test log'
+        self.logthon.success(message)
+        with open(self.temp_file) as log_file:
+            self.assertIn(message, log_file.read())
+        self._clean()
+
+
 if __name__ == '__main__':
     unittest.main()
