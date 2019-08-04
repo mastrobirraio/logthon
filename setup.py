@@ -25,12 +25,12 @@ test_requirements = {
     'dev': [
         'coveralls',
         'freezegun',
-           ] + requirements
+    ] + requirements
 }
 
 setup(
     name=NAME,
-    version='2.0.1',
+    version='2.1.3',
     author='Giuseppe "mastrobirraio" Matranga',
     author_email='matrangagiuseppe99@gmail.com',
     maintainer='Giuseppe "mastrobirraio Matranga',

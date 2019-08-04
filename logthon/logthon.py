@@ -14,6 +14,7 @@ from colorama import Fore
 
 """OUTPUT FORMAT"""
 STD_FORMAT = '[{timestamp}] - {level}: {message}'
+MODULE_FORMAT = '[{timestamp}] {module_name} - {level}: {message}'
 
 """COLORS"""
 YELLOW_FORMAT = Fore.YELLOW
@@ -44,33 +45,48 @@ LOG_LEVELS = {
 
 class Logthon:
 
-    def __init__(self, save_log=False, filename='logthon.log'):
+    def __init__(self, save_log=False, filename='logthon.log', module_name=None):
         """Set the format global variable as class attribute"""
-        self._format = STD_FORMAT
         self._filename = filename
         self._save_log = save_log
+        self._module_name = module_name
+        self._set_format()
 
+    def _set_format(self):
+        if self._module_name is None:
+            self._format = STD_FORMAT
+        else:
+            self._format = MODULE_FORMAT
+            
     def _log_to_file(self, message):
         if self._save_log:
             with open(self._filename, 'a') as log_file:
                 log_file.write('{}\n'.format(message))
 
-    def compose_message(self, level, message):
+    def _compose_message(self, level, message):
         """Compose the text message
 
         :param level: the log level one of the defined global LEVELS
         :param message: the message to log
         :return: the formatted string
         """
-        log_message = self._format.format(
-            timestamp=datetime.now(),
-            level=level,
-            message=message
-        )
+        if self._format == STD_FORMAT:
+            log_message = self._format.format(
+                timestamp=datetime.now(),
+                level=level,
+                message=message
+            )
+        else:
+            log_message = self._format.format(
+                timestamp=datetime.now(),
+                level=level,
+                message=message,
+                module_name=self._module_name
+            )
         self._log_to_file(log_message)
         return log_message
 
-    def compose_output(self, color, message):
+    def _compose_output(self, color, message):
         """Compose the output message
 
         :param color: the string color according to log level
@@ -88,45 +104,45 @@ class Logthon:
 
         :param message: the message to log
         """
-        message = self.compose_message(INFO_LEVEL, message)
-        print(self.compose_output(LOG_LEVELS[INFO_LEVEL], message))
+        message = self._compose_message(INFO_LEVEL, message)
+        print(self._compose_output(LOG_LEVELS[INFO_LEVEL], message))
 
     def warn(self, message):
         """Print a log using WARN_LEVEL
 
         :param message: the message to log
         """
-        message = self.compose_message(WARN_LEVEL, message)
-        print(self.compose_output(LOG_LEVELS[WARN_LEVEL], message))
+        message = self._compose_message(WARN_LEVEL, message)
+        print(self._compose_output(LOG_LEVELS[WARN_LEVEL], message))
 
     def error(self, message):
         """Print a log using ERRO_LEVEL
 
         :param message: the message to log
         """
-        message = self.compose_message(ERRO_LEVEL, message)
-        print(self.compose_output(LOG_LEVELS[ERRO_LEVEL], message))
+        message = self._compose_message(ERRO_LEVEL, message)
+        print(self._compose_output(LOG_LEVELS[ERRO_LEVEL], message))
     
     def success(self, message):
         """Print a log using SUCC_LEVEL
 
         :param message: the message to log
         """
-        message = self.compose_message(SUCC_LEVEL, message)
-        print(self.compose_output(LOG_LEVELS[SUCC_LEVEL], message))
+        message = self._compose_message(SUCC_LEVEL, message)
+        print(self._compose_output(LOG_LEVELS[SUCC_LEVEL], message))
 
     def critical(self, message):
         """Print a log using CRITICAL_LEVEL
 
         :param message: the message to log
         """
-        message = self.compose_message(CRITICAL_LEVEL, message)
-        print(self.compose_output(LOG_LEVELS[CRITICAL_LEVEL], message))
+        message = self._compose_message(CRITICAL_LEVEL, message)
+        print(self._compose_output(LOG_LEVELS[CRITICAL_LEVEL], message))
 
     def debug(self, message):
         """Print a log using DEBUG_LEVEL
 
         :param message: the message to log
         """
-        message = self.compose_message(DEBUG_LEVEL, message)
-        print(self.compose_output(LOG_LEVELS[DEBUG_LEVEL], message))
+        message = self._compose_message(DEBUG_LEVEL, message)
+        print(self._compose_output(LOG_LEVELS[DEBUG_LEVEL], message))
