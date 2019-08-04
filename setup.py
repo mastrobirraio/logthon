@@ -30,7 +30,7 @@ test_requirements = {
 
 setup(
     name=NAME,
-    version='2.1.1',
+    version='2.1.2',
     author='Giuseppe "mastrobirraio" Matranga',
     author_email='matrangagiuseppe99@gmail.com',
     maintainer='Giuseppe "mastrobirraio Matranga',
