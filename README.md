@@ -46,6 +46,15 @@ from logthon.logthon import Logthon as Logger
 Logthon = Logger(save_log=True, filename='/path/to/file')
 ```
 
+### Define module name on log
+
+```
+from logthon.logthon import Logthon as Logger
+
+Logthon = Logger(module_name=__name__)
+Logthon = Logger(module_name='my.module.name')
+```
+
 ### Info level
 
 ```
