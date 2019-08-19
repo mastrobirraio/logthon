@@ -14,6 +14,11 @@ Please note I have a code of conduct, please follow it in all your interactions 
    Pull Request would represent. The versioning scheme I use is [SemVer](http://semver.org/).
 4. You may merge the Pull Request in once you have the sign-off of one developer, or if you 
    do not have permission to do that, you may request the second reviewer to merge it for you.
+   
+The source code of this project is compliant to:
+* [Python 3.7](https://www.python.org/downloads/release/python-370/)
+* PEP 8: [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
+* PEP 257: [Docstring Conventions](https://www.python.org/dev/peps/pep-0257/)
 
 ## Code of Conduct
 
