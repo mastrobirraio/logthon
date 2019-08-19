@@ -18,6 +18,7 @@ The source code of this project is compliant to:
 * [Python 3.7](https://www.python.org/downloads/release/python-370/)
 * PEP 8: [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
 * PEP 257: [Docstring Conventions](https://www.python.org/dev/peps/pep-0257/)
+* PEP 3101: [Advanced String Formatting](https://www.python.org/dev/peps/pep-3101/)
 
 
 ## Code of Conduct
