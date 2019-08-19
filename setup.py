@@ -30,7 +30,7 @@ test_requirements = {
 
 setup(
     name=NAME,
-    version='2.1.4',
+    version='2.1.5',
     author='Giuseppe "mastrobirraio" Matranga',
     author_email='matrangagiuseppe99@gmail.com',
     maintainer='Giuseppe "mastrobirraio Matranga',
@@ -60,7 +60,7 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Terminals',
     ],
-    install_requirements=requirements,
+    install_requires=requirements,
     keywords='log logger logging logthon ansi crossplatform xplatform',
     python_requires='>=2.7',
 )
