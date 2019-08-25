@@ -7,8 +7,8 @@ Logthon
 
 Loghton is a simple logger for Python
 """
-
 from datetime import datetime
+from sys import exit as sys_exit
 
 from colorama import Fore
 
@@ -50,20 +50,20 @@ class Logthon:
         self._filename = filename
         self._save_log = save_log
         self._module_name = module_name
-        self._set_format()
+        self.__set_format()
 
-    def _set_format(self):
+    def __set_format(self):
         if self._module_name is None:
             self._format = STD_FORMAT
         else:
             self._format = MODULE_FORMAT
             
-    def _log_to_file(self, message):
+    def __log_to_file(self, message):
         if self._save_log:
             with open(self._filename, 'a') as log_file:
                 log_file.write('{}\n'.format(message))
 
-    def _compose_message(self, level, message):
+    def __compose_message(self, level, message):
         """Compose the text message
 
         :param level: the log level one of the defined global LEVELS
@@ -83,10 +83,10 @@ class Logthon:
                 message=message,
                 module_name=self._module_name
             )
-        self._log_to_file(log_message)
+        self.__log_to_file(log_message)
         return log_message
 
-    def _compose_output(self, color, message):
+    def __compose_output(self, color, message):
         """Compose the output message
 
         :param color: the string color according to log level
@@ -99,50 +99,67 @@ class Logthon:
             reset_format=RESET_FORMAT
         )
 
+    def __level_exists(self, level):
+        return level in LOG_LEVELS.keys()
+
     def info(self, message):
         """Print a log using INFO_LEVEL
 
         :param message: the message to log
         """
-        message = self._compose_message(INFO_LEVEL, message)
-        print(self._compose_output(LOG_LEVELS[INFO_LEVEL], message))
+        message = self.__compose_message(INFO_LEVEL, message)
+        print(self.__compose_output(LOG_LEVELS[INFO_LEVEL], message))
 
     def warn(self, message):
         """Print a log using WARN_LEVEL
 
         :param message: the message to log
         """
-        message = self._compose_message(WARN_LEVEL, message)
-        print(self._compose_output(LOG_LEVELS[WARN_LEVEL], message))
+        message = self.__compose_message(WARN_LEVEL, message)
+        print(self.__compose_output(LOG_LEVELS[WARN_LEVEL], message))
 
     def error(self, message):
         """Print a log using ERRO_LEVEL
 
         :param message: the message to log
         """
-        message = self._compose_message(ERRO_LEVEL, message)
-        print(self._compose_output(LOG_LEVELS[ERRO_LEVEL], message))
+        message = self.__compose_message(ERRO_LEVEL, message)
+        print(self.__compose_output(LOG_LEVELS[ERRO_LEVEL], message))
     
     def success(self, message):
         """Print a log using SUCC_LEVEL
 
         :param message: the message to log
         """
-        message = self._compose_message(SUCC_LEVEL, message)
-        print(self._compose_output(LOG_LEVELS[SUCC_LEVEL], message))
+        message = self.__compose_message(SUCC_LEVEL, message)
+        print(self.__compose_output(LOG_LEVELS[SUCC_LEVEL], message))
 
     def critical(self, message):
         """Print a log using CRITICAL_LEVEL
 
         :param message: the message to log
         """
-        message = self._compose_message(CRITICAL_LEVEL, message)
-        print(self._compose_output(LOG_LEVELS[CRITICAL_LEVEL], message))
+        message = self.__compose_message(CRITICAL_LEVEL, message)
+        print(self.__compose_output(LOG_LEVELS[CRITICAL_LEVEL], message))
 
     def debug(self, message):
         """Print a log using DEBUG_LEVEL
 
         :param message: the message to log
         """
-        message = self._compose_message(DEBUG_LEVEL, message)
-        print(self._compose_output(LOG_LEVELS[DEBUG_LEVEL], message))
+        message = self.__compose_message(DEBUG_LEVEL, message)
+        print(self.__compose_output(LOG_LEVELS[DEBUG_LEVEL], message))
+
+    def log_and_exit_with_code(self, message, level=CRITICAL_LEVEL, error_code=1):
+        """Print a log using level defined by user and exit program with error code defined by user
+
+        :param message: the message to log
+        :param level: the level to use to log message
+        :param error_code: the code to use when exit
+        """
+        if self.__level_exists(level):
+            message = self.__compose_message(level, message)
+            print(self.__compose_output(LOG_LEVELS[level], message))
+            sys_exit(error_code)
+        self.critical('Log level doesn\'t exists')
+        sys_exit(1)
