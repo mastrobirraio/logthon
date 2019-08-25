@@ -30,10 +30,10 @@ test_requirements = {
 
 setup(
     name=NAME,
-    version='2.1.5',
+    version='2.2.0',
     author='Giuseppe "mastrobirraio" Matranga',
     author_email='matrangagiuseppe99@gmail.com',
-    maintainer='Giuseppe "mastrobirraio Matranga',
+    maintainer='Giuseppe "mastrobirraio" Matranga',
     license='GPLv3',
     description='A simple logger for Python',
     long_description=read_file('README.md'),

@@ -100,6 +100,30 @@ Logthon.debug('This is a debug log')
 # [2012-01-14 00:00:00] DEBUG: This is a debug log
 ```
 
+## Log and exit program with error code
+You can log a message and exit the program defining optionally and error code.
+```
+# Default log level is CRITICAL
+# Default error code is 1
+Logthon.log_and_exit_with_code('This is a message')
+```
+
+If you want to define log level, you need to import level you want
+```
+from logthon.logthon import INFO_LEVEL
+from logthon.logthon import WARN_LEVEL
+from logthon.logthon import ERRO_LEVEL
+from logthon.logthon import SUCC_LEVEL
+from logthon.logthon import CRITICAL_LEVEL
+from logthon.logthon import DEBUG_LEVEL
+
+# e.g. we want to log with error level and exit
+Logthon.log_and_exit_with_code('Log message', level=ERRO_LEVEL)
+
+# e.g. we want to log with debug level and exit with code 5
+Logthon.log_and_exit_with_code('Log message', level=DEBUG_LEVEL, error_code=5)
+```
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on code of conduct, and the process for submitting pull requests.
