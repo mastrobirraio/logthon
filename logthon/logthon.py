@@ -47,21 +47,21 @@ class Logthon:
 
     def __init__(self, save_log=False, filename='logthon.log', module_name=None):
         """Set the format global variable as class attribute"""
-        self._filename = filename
-        self._save_log = save_log
-        self._module_name = module_name
+        self.__filename = filename
+        self.__save_log = save_log
+        self.__module_name = module_name
         self.__set_format()
 
     def __set_format(self):
-        if self._module_name is None:
+        if self.__module_name is None:
             self._format = STD_FORMAT
         else:
             self._format = MODULE_FORMAT
             
     def __log_to_file(self, message):
-        if self._save_log:
-            with open(self._filename, 'a') as log_file:
-                log_file.write('{}\n'.format(message))
+        if self.__save_log:
+            with open(self.__filename, 'a') as log_file:
+                log_file.write(f'{message}\n')
 
     def __compose_message(self, level, message):
         """Compose the text message
@@ -81,7 +81,7 @@ class Logthon:
                 timestamp=datetime.now(),
                 level=level,
                 message=message,
-                module_name=self._module_name
+                module_name=self.__module_name
             )
         self.__log_to_file(log_message)
         return log_message
@@ -93,11 +93,7 @@ class Logthon:
         :param message: the message to log
         :return:
         """
-        return '{color}{message}{reset_format}'.format(
-            color=color,
-            message=message,
-            reset_format=RESET_FORMAT
-        )
+        return f'{color}{message}{RESET_FORMAT}'
 
     def __level_exists(self, level):
         return level in LOG_LEVELS.keys()
