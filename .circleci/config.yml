@@ -51,17 +51,19 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - setup_testing_tools
       - run:
-          name: Verify git tag and version
+          name: installing dependencies
           command: |
-            python setup.py verify
+            pip3 install Wheel
+            pip3 install twine
+
       - run:
           name: init .pypirc
           command: |
-            echo -e "[testpypi]" >> ~/.pypirc
-            echo -e "username = __token__" >> ~/.pypirc
-            echo -e "password = ${PYPI_TEST_TOKEN}" >> ~/.pypirc
+            echo -e "[testpypi]" >> .pypirc
+            echo -e "username = __token__" >> .pypirc
+            echo -e "password = ${PIPY_TEST_TOKEN}" >> .pypirc
+            cat .pypirc
       - run:
           name: Create packages
           command: |
@@ -70,7 +72,7 @@ jobs:
       - run:
           name: Update to PyPI Test
           command: |
-            twine upload --repository testpypi dist/*
+            twine upload --repository testpypi --config-file ./.pypirc dist/*
 
   deploy_pypi:
     docker:
@@ -79,15 +81,11 @@ jobs:
       - checkout
       - setup_testing_tools
       - run:
-          name: Verify git tag and version
-          command: |
-            python setup.py verify
-      - run:
           name: init .pypirc
           command: |
             echo -e "[testpypi]" >> ~/.pypirc
             echo -e "username = __token__" >> ~/.pypirc
-            echo -e "password = ${PYPI_TOKEN}" >> ~/.pypirc
+            echo -e "password = ${PIPY_TOKEN}" >> ~/.pypirc
       - run:
           name: Create packages
           command: |
@@ -113,17 +111,16 @@ workflows:
       - test_code:
           filters:
             tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
+              only: /^beta.*/
+
       - deploy_pypi_test:
           requires:
             - test_code 
           filters:
             tags:
-              only: /.*/
+              only: /^beta.*/
             branches:
-              ignore: /.*/
+              only: devel
         
   build_and_pypi_deploy:
     jobs:
@@ -131,10 +128,14 @@ workflows:
           filters:
             branches:
               only: master
+            tags:
+              only: /.*/
       - flake:
           filters:
             branches:
               only: master
+            tags:
+              only: /.*/
       - test_code:
           requires:
             - flake
@@ -142,15 +143,21 @@ workflows:
           filters:
             branches:
               only: master
+            tags:
+              only: /.*/
       - deploy_pypi_test:
           requires:
             - test_code
           filters:
             branches:
               only: master
+            tags:
+              only: /.*/
       - deploy_pypi:
           requires:
             - deploy_pypi_test
           filters:
             branches:
               only: master
+            tags:
+              only: /.*/
