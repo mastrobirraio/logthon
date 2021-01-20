@@ -112,6 +112,8 @@ workflows:
           filters:
             tags:
               only: /^beta.*/
+            branches:
+              only: devel
 
       - deploy_pypi_test:
           requires:
@@ -160,4 +162,4 @@ workflows:
             branches:
               only: master
             tags:
-              only: /.*/
+             only: /.*/
