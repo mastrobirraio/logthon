@@ -56,7 +56,6 @@ jobs:
           command: |
             pip3 install Wheel
             pip3 install twine
-
       - run:
           name: init .pypirc
           command: |
@@ -79,13 +78,18 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - setup_testing_tools
+      - run:
+          name: installing dependencies
+          command: |
+            pip3 install Wheel
+            pip3 install twine
       - run:
           name: init .pypirc
           command: |
-            echo -e "[testpypi]" >> ~/.pypirc
-            echo -e "username = __token__" >> ~/.pypirc
-            echo -e "password = ${PIPY_TOKEN}" >> ~/.pypirc
+            echo -e "[pypi]" >> .pypirc
+            echo -e "username = __token__" >> .pypirc
+            echo -e "password = ${PIPY_TOKEN}" >> .pypirc
+            cat .pypirc
       - run:
           name: Create packages
           command: |
@@ -94,7 +98,7 @@ jobs:
       - run:
           name: Update to PyPI
           command: |
-            twine upload dist/*
+            twine upload --config-file ./.pypirc dist/*
 
 workflows:
   build_and_test:
