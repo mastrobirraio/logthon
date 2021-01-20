@@ -175,3 +175,4 @@ class Logthon:
             print(self.__compose_output(LOG_LEVELS[level], message))
         else:
             self.critical('Log level dosent\'t exists')
+
