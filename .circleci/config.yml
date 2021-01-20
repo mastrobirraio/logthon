@@ -1,0 +1,174 @@
+version: 2.1
+
+commands:
+  setup_testing_tools:
+    description: Configure testing env
+    steps:
+      - run:
+          name: "Installing testing dependencies"
+          command: pip install -r requirements_dev.txt
+      - run:
+          name: "Dependencies installed"
+          command: pip freeze
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - setup_testing_tools
+
+  isort:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: pip3 install isort 
+      - run: isort -c logthon/logthon.py
+
+  flake:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: pip3 install flake8
+      - run: flake8 --max-line-length=120 --ignore=F401,E402
+
+  test_code:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - setup_testing_tools
+      - run: pip3 install pytest
+      - run: touch tests/logthon.log
+      - run: touch tests/app.log
+      - run: pytest tests/test_logthon.py
+  
+  deploy_pypi_test:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          name: installing dependencies
+          command: |
+            pip3 install Wheel
+            pip3 install twine
+
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[testpypi]" >> .pypirc
+            echo -e "username = __token__" >> .pypirc
+            echo -e "password = ${PIPY_TEST_TOKEN}" >> .pypirc
+            cat .pypirc
+      - run:
+          name: Create packages
+          command: |
+            python setup.py sdist
+            python setup.py bdist_wheel
+      - run:
+          name: Update to PyPI Test
+          command: |
+            twine upload --repository testpypi --config-file ./.pypirc dist/*
+
+  deploy_pypi:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - setup_testing_tools
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[testpypi]" >> ~/.pypirc
+            echo -e "username = __token__" >> ~/.pypirc
+            echo -e "password = ${PIPY_TOKEN}" >> ~/.pypirc
+      - run:
+          name: Create packages
+          command: |
+            python setup.py sdist
+            python setup.py bdist_wheel
+      - run:
+          name: Update to PyPI
+          command: |
+            twine upload dist/*
+
+workflows:
+  build_and_test:
+    jobs:
+      - isort:
+          filters:
+            branches:
+              only: devel
+      - flake:
+          filters:
+            branches:
+              only: devel
+      - test_code:
+          requires:
+            - flake
+            - isort
+          filters:
+            branches:
+              only: devel
+
+  build_and_pypi_test_deploy:
+    jobs:
+      - test_code:
+          filters:
+            tags:
+              only: /^beta.*/
+            branches:
+              ignore: /.*/
+
+      - deploy_pypi_test:
+          requires:
+            - test_code 
+          filters:
+            tags:
+              only: /^beta.*/
+            branches:
+              ignore: /.*/
+        
+  build_and_pypi_deploy:
+    jobs:
+      - isort:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - flake:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - test_code:
+          requires:
+            - flake
+            - isort
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - deploy_pypi_test:
+          requires:
+            - test_code
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - deploy_pypi:
+          requires:
+            - deploy_pypi_test
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
