@@ -1,21 +1,156 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@0.2.1
+commands:
+  setup_testing_tools:
+    description: Configure testing env
+    steps:
+      - run:
+          name: "Installing testing dependencies"
+          command: pip install -r requirements_dev.txt
+      - run:
+          name: "Dependencies installed"
+          command: pip freeze
 
 jobs:
-  build-and-test:
-    executor: python/default
+  build:
+    docker:
+      - image: circleci/python:3.6
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - setup_testing_tools
+
+  isort:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: pip3 install isort 
+      - run: isort -c logthon/logthon.py
+
+  flake:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: pip3 install flake8
+      - run: flake8 --max-line-length=120 --ignore=F401,E402
+
+  test_code:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - setup_testing_tools
+      - run: pip3 install pytest
+      - run: touch tests/logthon.log
+      - run: touch tests/app.log
+      - run: pytest tests/test_logthon.py
+  
+  deploy_pypi_test:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - setup_testing_tools
       - run:
-          command: ./manage.py test
-          name: Test
+          name: Verify git tag and version
+          command: |
+            python setup.py verify
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[testpypi]" >> ~/.pypirc
+            echo -e "username = __token__" >> ~/.pypirc
+            echo -e "password = ${PYPI_TEST_TOKEN}" >> ~/.pypirc
+      - run:
+          name: Create packages
+          command: |
+            python setup.py sdist
+            python setup.py bdist_wheel
+      - run:
+          name: Update to PyPI Test
+          command: |
+            twine upload --repository testpypi dist/*
+
+  deploy_pypi:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - setup_testing_tools
+      - run:
+          name: Verify git tag and version
+          command: |
+            python setup.py verify
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[testpypi]" >> ~/.pypirc
+            echo -e "username = __token__" >> ~/.pypirc
+            echo -e "password = ${PYPI_TOKEN}" >> ~/.pypirc
+      - run:
+          name: Create packages
+          command: |
+            python setup.py sdist
+            python setup.py bdist_wheel
+      - run:
+          name: Update to PyPI
+          command: |
+            twine upload dist/*
 
 workflows:
-  main:
+  build_and_test:
     jobs:
-      - build-and-test
+      - isort
+      - flake
+      - test_code:
+          requires:
+            - flake
+            - isort
+
+  build_and_pypi_test_deploy:
+    jobs:
+      - test_code:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - deploy_pypi_test:
+          requires:
+            - test_code 
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+        
+  build_and_pypi_deploy:
+    jobs:
+      - isort:
+          filters:
+            branches:
+              only: master
+      - flake:
+          filters:
+            branches:
+              only: master
+      - test_code:
+          requires:
+            - flake
+            - isort
+          filters:
+            branches:
+              only: master
+      - deploy_pypi_test:
+          requires:
+            - test_code
+          filters:
+            branches:
+              only: master
+      - deploy_pypi:
+          requires:
+            - deploy_pypi_test
+          filters:
+            branches:
+              only: master
