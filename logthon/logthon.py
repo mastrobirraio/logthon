@@ -159,3 +159,20 @@ class Logthon:
             sys_exit(error_code)
         self.critical('Log level doesn\'t exists')
         sys_exit(1)
+
+    def pretty_print(self, message, dicts, level=DEBUG_LEVEL):
+        """ Print a log with dictonioray or list prettifying the output. Default log level is DEBUG
+
+        :param message: the message to log
+        :param dicts: the dict to prettify
+        :param level: the level to use to log message
+        """
+
+        import json
+
+        if self.__level_exists(level):
+            message = self.__compose_message(level, '{}: {}'.format(message, json.dumps(dicts, indent=4, default=str)))
+            print(self.__compose_output(LOG_LEVELS[level], message))
+        else:
+            self.critical('Log level dosent\'t exists')
+

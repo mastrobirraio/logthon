@@ -33,7 +33,7 @@ Logthon = Logger()
 #### Save output on file
 
 ```
-from logthon.logthon import Logthon as Logger
+from logthon import Logthon as Logger
 
 Logthon = Logger(save_log=True)
 ```
@@ -41,7 +41,7 @@ Logthon = Logger(save_log=True)
 #### Save output on custom file
 
 ```
-from logthon.logthon import Logthon as Logger
+from logthon import Logthon as Logger
 
 Logthon = Logger(save_log=True, filename='/path/to/file')
 ```
@@ -49,7 +49,7 @@ Logthon = Logger(save_log=True, filename='/path/to/file')
 ### Define module name on log format
 
 ```
-from logthon.logthon import Logthon as Logger
+from logthon import Logthon as Logger
 
 Logthon = Logger(module_name=__name__)  # or Logger(module_name='my.module.path')
 
@@ -124,6 +124,25 @@ Logthon.log_and_exit_with_code('Log message', level=ERRO_LEVEL)
 Logthon.log_and_exit_with_code('Log message', level=DEBUG_LEVEL, error_code=5)
 ```
 
+## Log a prettified dictionary 
+You can log a message with a dictionary pretty printed
+```
+# Default log level is DEBUG 
+Logthon.pretty_print('This is a message', {'key': 'word'})
+```
+
+If you want to define log level, you need to import level you want
+```
+from logthon.logthon import INFO_LEVEL
+from logthon.logthon import WARN_LEVEL
+from logthon.logthon import ERRO_LEVEL
+from logthon.logthon import SUCC_LEVEL
+from logthon.logthon import CRITICAL_LEVEL
+from logthon.logthon import DEBUG_LEVEL
+
+# e.g. we want to log with info level
+Logthon.pretty_print('This is a message', {'key': 'word'}, level=INFO_LEVEL)
+```
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on code of conduct, and the process for submitting pull requests.
