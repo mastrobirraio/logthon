@@ -99,8 +99,14 @@ jobs:
 workflows:
   build_and_test:
     jobs:
-      - isort
-      - flake
+      - isort:
+          filters:
+            branches:
+              only: devel
+      - flake:
+          filters:
+            branches:
+              only: devel
       - test_code:
           requires:
             - flake
