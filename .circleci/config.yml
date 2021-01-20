@@ -121,8 +121,6 @@ workflows:
           filters:
             tags:
               only: /^beta.*/
-            branches:
-              only: devel
 
       - deploy_pypi_test:
           requires:
@@ -130,8 +128,6 @@ workflows:
           filters:
             tags:
               only: /^beta.*/
-            branches:
-              only: devel
         
   build_and_pypi_deploy:
     jobs:
