@@ -9,7 +9,7 @@ import unittest.mock
 
 from freezegun import freeze_time
 
-from logthon.logthon import Logthon
+from ..logthon import Logthon
 
 FREEZE_DATE = '2012-01-14'
 
@@ -65,7 +65,7 @@ class TestLogthon(unittest.TestCase):
 class TestLogthonDefaultFile(unittest.TestCase):
 
     def setUp(self):
-        self.temp_file = '../logthon/logthon.log'
+        self.temp_file = './logthon.log'
         self.logthon = Logthon(save_log=True)
 
     def _clean(self):
@@ -124,17 +124,17 @@ class TestLogthonCustomFile(TestLogthonDefaultFile):
 
     def setUp(self):
         self.file_name = 'app.log'
-        self.temp_file = '../logthon/{}'.format(self.file_name)
+        self.temp_file = './{}'.format(self.file_name)
         self.logthon = Logthon(save_log=True, filename=self.file_name)
 
     @freeze_time(FREEZE_DATE)
     def test_info_level(self):
         super(TestLogthonCustomFile, self).test_info_level()
-    
+
     @freeze_time(FREEZE_DATE)
     def test_warn_level(self):
         super(TestLogthonCustomFile, self).test_warn_level()
-        
+
     @freeze_time(FREEZE_DATE)
     def test_error_level(self):
         super(TestLogthonCustomFile, self).test_error_level()
@@ -142,11 +142,11 @@ class TestLogthonCustomFile(TestLogthonDefaultFile):
     @freeze_time(FREEZE_DATE)
     def test_critical_level(self):
         super(TestLogthonCustomFile, self).test_critical_level()
-    
+
     @freeze_time(FREEZE_DATE)
     def test_debug_level(self):
         super(TestLogthonCustomFile, self).test_debug_level()
-    
+
     @freeze_time(FREEZE_DATE)
     def test_success_level(self):
         super(TestLogthonCustomFile, self).test_success_level()
