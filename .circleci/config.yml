@@ -105,6 +105,9 @@ workflows:
           requires:
             - flake
             - isort
+          filters:
+            branches:
+              only: devel
 
   build_and_pypi_test_deploy:
     jobs:
