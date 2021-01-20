@@ -57,7 +57,7 @@ class Logthon:
             self._format = STD_FORMAT
         else:
             self._format = MODULE_FORMAT
-            
+
     def __log_to_file(self, message):
         if self.__save_log:
             with open(self.__filename, 'a') as log_file:
@@ -121,7 +121,7 @@ class Logthon:
         """
         message = self.__compose_message(ERRO_LEVEL, message)
         print(self.__compose_output(LOG_LEVELS[ERRO_LEVEL], message))
-    
+
     def success(self, message):
         """Print a log using SUCC_LEVEL
 
@@ -175,4 +175,3 @@ class Logthon:
             print(self.__compose_output(LOG_LEVELS[level], message))
         else:
             self.critical('Log level dosent\'t exists')
-
