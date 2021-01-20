@@ -137,38 +137,38 @@ workflows:
     jobs:
       - isort:
           filters:
-            branches:
-              only: master
             tags:
-              only: /.*/
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - flake:
           filters:
-            branches:
-              only: master
             tags:
-              only: /.*/
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - test_code:
           requires:
             - flake
             - isort
           filters:
-            branches:
-              only: master
             tags:
-              only: /.*/
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - deploy_pypi_test:
           requires:
             - test_code
           filters:
-            branches:
-              only: master
             tags:
-              only: /.*/
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - deploy_pypi:
           requires:
             - deploy_pypi_test
           filters:
-            branches:
-              only: master
             tags:
-             only: /.*/
+              only: /^v.*/
+            branches:
+              ignore: /.*/
