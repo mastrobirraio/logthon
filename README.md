@@ -108,6 +108,14 @@ You can log a message and exit the program defining optionally and error code.
 Logthon.log_and_exit_with_code('This is a message')
 ```
 
+## Disable debug level log printing
+```
+logthon = Logthon(debug=False)
+logthon.debug('This is a debug log')
+
+# Nothing printed
+```
+
 If you want to define log level, you need to import level you want
 ```
 from logthon.logthon import INFO_LEVEL
