@@ -45,11 +45,12 @@ LOG_LEVELS = {
 
 class Logthon:
 
-    def __init__(self, save_log=False, filename='logthon.log', module_name=None):
+    def __init__(self, save_log=False, filename='logthon.log', module_name=None, debug=True):
         """Set the format global variable as class attribute"""
         self.__filename = filename
         self.__save_log = save_log
         self.__module_name = module_name
+        self.__show_debug_logs = debug
         self.__set_format()
 
     def __set_format(self):
@@ -143,8 +144,9 @@ class Logthon:
 
         :param message: the message to log
         """
-        message = self.__compose_message(DEBUG_LEVEL, message)
-        print(self.__compose_output(LOG_LEVELS[DEBUG_LEVEL], message))
+        if self.__show_debug_logs:
+            message = self.__compose_message(DEBUG_LEVEL, message)
+            print(self.__compose_output(LOG_LEVELS[DEBUG_LEVEL], message))
 
     def log_and_exit_with_code(self, message, level=CRITICAL_LEVEL, error_code=1):
         """Print a log using level defined by user and exit program with error code defined by user
